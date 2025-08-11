@@ -22,7 +22,7 @@ def get_conversion_factor(base_currency: str, target_currency: str)->float:
 
 # LLM, do not try to fill this argument. I (the developer/runtime) will inject this value after running earlier tools.
 @tool
-def convert(base_currency_value: int, conversion_rate: float) ->float:
+def convert(base_currency_value: int, conversion_rate: Annotated[float, InjectedToolArg]) ->float:
     """
     Given a currency conversion rate this function calculates the target currency value from a given base currency value.
     """
