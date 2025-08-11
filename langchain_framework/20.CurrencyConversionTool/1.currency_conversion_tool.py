@@ -1,5 +1,3 @@
-# API_KEY = "69187d08c39d0a489ad69c7c"
-
 from langchain_core.tools import tool, InjectedToolArg
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.messages import HumanMessage
