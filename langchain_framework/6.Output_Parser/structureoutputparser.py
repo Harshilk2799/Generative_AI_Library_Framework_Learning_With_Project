@@ -3,6 +3,7 @@ from decouple import config
 from langchain_core.prompts import PromptTemplate
 from langchain.output_parsers import StructuredOutputParser, ResponseSchema
 
+# Deprecated: Yes, the older approach using StructuredOutputParser and ResponseSchema has been deprecated in LangChain v1
 chat_model = ChatGoogleGenerativeAI(model="gemini-1.5-flash", api_key=config("GOOGLE_GEMINI_API_KEY"))
 
 schema = [
