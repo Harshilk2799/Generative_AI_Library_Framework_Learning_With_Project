@@ -3,7 +3,7 @@ from decouple import config
 from typing import Literal
 from langchain_core.prompts import PromptTemplate
 from langchain_core.output_parsers import StrOutputParser, PydanticOutputParser
-from langchain.schema.runnable import RunnableBranch, RunnableLambda
+from langchain_core.runnables import RunnableBranch, RunnableLambda
 from pydantic import BaseModel, Field
 
 chat_model = ChatGoogleGenerativeAI(model="gemini-1.5-flash", api_key=config("GOOGLE_GEMINI_API_KEY"))
