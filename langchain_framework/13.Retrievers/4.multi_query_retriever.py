@@ -2,7 +2,9 @@ from langchain_google_genai import GoogleGenerativeAIEmbeddings, GoogleGenerativ
 from langchain_community.vectorstores import Chroma
 from langchain_core.documents import Document
 from decouple import config
-from langchain.retrievers.multi_query import MultiQueryRetriever
+from langchain_milvus import Milvus
+from langchain_classic.retrievers import MultiQueryRetriever
+from uuid import uuid4
 
 # Relevant health & wellness documents
 all_docs = [
@@ -18,18 +20,30 @@ all_docs = [
     Document(page_content="Black holes bend spacetime and store immense gravitational energy.", metadata={"source": "I5"}),
 ]
 
-embedding_model = GoogleGenerativeAIEmbeddings(model="models/embedding-001", google_api_key=config("GOOGLE_GEMINI_API_KEY"))
 
-vectorstore = Chroma.from_documents(
-    documents = all_docs,
-    embedding = embedding_model,
-    collection_name = "my_collection"
+embedding_model = GoogleGenerativeAIEmbeddings(model="gemini-embedding-001", google_api_key=config("GOOGLE_GEMINI_API_KEY"))
+
+vectorstore= Milvus(
+    embedding_function=embedding_model,
+    connection_args={
+        "uri": config("MILVUS_ENDPOINT"), "token": config("MILVUS_TOKEN"), "db_name": "milvusdb"
+    },
+    index_params={
+        "index_type": "FLAT", "metric_type": "L2"
+    },
+    consistency_level="Strong",
+    drop_old=False,
+    collection_name="milvusCollectionNew2",
+    # auto_id=True
 )
+
+uuids = [str(uuid4()) for _ in range(len(all_docs))]
+vectorstore.add_documents(documents=all_docs, ids=uuids)
 
 similarity_retriever = vectorstore.as_retriever(search_type="similarity",search_kwargs={"k":5})
 
 multiquery_retriever = MultiQueryRetriever.from_llm(
-    llm = GoogleGenerativeAI(model="gemini-1.5-flash", api_key=config("GOOGLE_GEMINI_API_KEY")),
+    llm = GoogleGenerativeAI(model="gemini-2.5-flash", api_key=config("GOOGLE_GEMINI_API_KEY")),
     retriever = vectorstore.as_retriever(search_kwargs={"k":5})
 )
 
