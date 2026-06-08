@@ -1,6 +1,7 @@
 from langchain_google_genai.embeddings import GoogleGenerativeAIEmbeddings
 from langchain_chroma import Chroma
-from langchain.schema import Document
+from langchain_core.documents import Document
+from decouple import config
 
 
 # Create LangChain documents for IPL players
@@ -29,7 +30,7 @@ doc5 = Document(
 docs = [doc1, doc2, doc3, doc4, doc5]
 
 vector_store = Chroma(
-    embedding_function = GoogleGenerativeAIEmbeddings(),
+    embedding_function = GoogleGenerativeAIEmbeddings(model="gemini-embedding-001", api_key=config("GOOGLE_GEMINI_API_KEY")),
     persist_directory = "/home/harshil/Documents/Generative_AI/langchain_framework/12.Vector_Database/Chroma_DB/My_Chroma_DB",
     collection_name = "sample"
 )
